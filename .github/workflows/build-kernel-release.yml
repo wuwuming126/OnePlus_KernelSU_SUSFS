@@ -462,23 +462,10 @@ jobs:
               model=$(echo "$full_model" | sed -E 's/_[^_]*$//')
               os_version=$(sed -n '2p' "$file")
               kernel_version=$(sed -n '1p' "$file")
-              
-              # Try to extract additional info from artifact directory
-              artifact_dir=$(dirname "$file")
-              if [ -f "$artifact_dir/build_info.json" ]; then
-                ksu_ver=$(jq -r '.ksu_version // "N/A"' "$artifact_dir/build_info.json")
-                susfs_commit=$(jq -r '.susfs_commit // "N/A"' "$artifact_dir/build_info.json")
-                clang_ver=$(jq -r '.clang_version // "N/A"' "$artifact_dir/build_info.json")
-              else
-                ksu_ver="N/A"
-                susfs_commit="N/A"
-                clang_ver="N/A"
-              fi
-              
-              device_info["$model"]="$os_version|$kernel_version"
-              ksu_versions["$model"]="$ksu_ver"
-              susfs_commits["$model"]="$susfs_commit"
-              clang_versions["$model"]="$clang_ver"
+              device_info["$full_model"]="$model|$os_version|$kernel_version"
+              ksu_versions["$full_model"]="$ksu_ver"
+              susfs_commits["$full_model"]="$susfs_commit"
+              clang_versions["$full_model"]="$clang_ver"
             fi
           done
           
@@ -513,15 +500,15 @@ jobs:
           |-------|------------|----------------|----------|----------|
           EOF
           
-          for model in $(printf '%s\n' "${!device_info[@]}" | sort); do
-            IFS='|' read -r os_ver kernel_ver <<< "${device_info[$model]}"
-            ksu_ver="${ksu_versions[$model]}"
+          for full_key in $(printf '%s\n' "${!device_info[@]}" | sort); do
+            IFS='|' read -r model os_ver kernel_ver <<< "${device_info[$full_key]}"
+            ksu_ver="${ksu_versions[$full_key]:-N/A}"
             
             # Determine features based on kernel version and config
             features=""
             
             # Check for HMBIRD support (OP13, OPAce5Pro with android15-6.6)
-            if [[ "$model" =~ ^(OP13|OPAce5Pro)$ ]] && [[ "$kernel_ver" == "android15-6.6"* ]]; then
+            if [[ "$model" =~ ^(OP-ACE-5-PRO|OP-ACE-6|OP-PAD-2-PRO|OP-PAD-3|OP13-CPH|OP13-PJZ|OP13S|OP13T|OP13)$ ]] && [[ "$kernel_ver" == android15-6.6* ]]; then
               features="${features}🐦 HMBIRD "
             fi
             
