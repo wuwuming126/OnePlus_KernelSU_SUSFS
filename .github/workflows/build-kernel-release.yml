@@ -645,7 +645,9 @@ jobs:
           - Improved ccache build system
           - Enhanced SUSFS hiding capabilities
           - Added IP_SET and TTL support
-          - Compiler optimizations ($OPTIMIZE_LEVEL)
+          - Added TMPFS_XATTR and TMPFS_POSIX_ACL support for Mountify
+          - Added Ptrace leak fix for kernels < 5.16
+          - Compiler optimizations (${{ inputs.optimize_level }})
           
           ### Previous Releases
           See [Releases Page](${{ github.server_url }}/${{ github.repository }}/releases)
