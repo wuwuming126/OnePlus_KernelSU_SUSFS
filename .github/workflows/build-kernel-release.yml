@@ -615,6 +615,10 @@ jobs:
           - **KSU SUSFS Module** (Required for SUSFS features)  
             → [GitHub Release](https://github.com/sidex15/ksu_module_susfs/releases)
           
+          ### Recomended Flasher
+          - **Kernel Flasher** (Required for flashing AnyKernel3 zips and backups and OTA)  
+            → [GitHub Release](https://github.com/fatalcoder524/KernelFlasher/releases)
+          
           ---
           
           ## 📥 Installation Instructions
@@ -624,11 +628,11 @@ jobs:
           - Backup your current boot image
           - Have root access using Magisk / KernelSU (Any forks) / Apatch
           
-          ### Via Custom Recovery
+          ### Via Kernel Flasher
           1. Download the appropriate ZIP for your device
           2. Flash the ZIP file using Kernel Flasher
           3. Reboot system
-          4. Install KernelSU/WildSU Manager
+          4. Install KernelSU-Next/WildSU Manager
           5. Install SUSFS module from manager
           
           ---
