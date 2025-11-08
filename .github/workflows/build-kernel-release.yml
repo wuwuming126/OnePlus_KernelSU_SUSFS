@@ -424,6 +424,7 @@ jobs:
       REPO_NAME: ${{ github.event.repository.name }}
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       RELEASE_NAME: '*TEST BUILD* OnePlus Kernels With KernelSU Next & SUSFS v1.5.12 *TEST BUILD*'
+      SUSFS_BASE_VERSION: 'v1.5.12'
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
@@ -432,7 +433,7 @@ jobs:
           
       - name: 🏷️ Generate and Create New Tag
         run: |
-          BASE_TAG="v1.5.12-r0"
+          BASE_TAG="$SUSFS_BASE_VERSION-r0"
           LATEST_TAG=$(gh api repos/$REPO_OWNER/$REPO_NAME/tags --jq '.[0].name')
           if [ -z "$LATEST_TAG" ]; then
             LATEST_TAG="$BASE_TAG"
@@ -493,7 +494,7 @@ jobs:
           [ -z "$SUSFS_A15" ] && SUSFS_A15="gki-android15-6.6 (auto)"
           
           cat << EOF > release_notes.md
-          # 🎯 OnePlus Kernels with KernelSU Next & SUSFS v1.5.12
+          # 🎯 OnePlus Kernels with KernelSU Next & SUSFS $SUSFS_BASE_VERSION
           
           > **Build Date:** $(date -u '+%Y-%m-%d %H:%M:%S UTC')  
           > **Build ID:** \`${{ github.run_id }}\`  
@@ -546,7 +547,7 @@ jobs:
           | Component | Version/Setting |
           |-----------|----------------|
           | **KernelSU Next Branch** | \`$KSUN_BRANCH\` |
-          | **SUSFS Version** | v1.5.12 |
+          | **SUSFS Version** | \`$SUSFS_BASE_VERSION\` |
           | **Optimization Level** | \`$OPTIMIZE_LEVEL\` |
           | **Clean Build** | $( [ "$CLEAN_BUILD" = "true" ] && echo "✅ Yes (no ccache)" || echo "❌ No (ccache enabled)" ) |
           | **Compiler** | Clang (version varies by device) |
@@ -566,7 +567,7 @@ jobs:
           
           ### 🔐 Root Management
           - **KernelSU Next** - Next-generation kernel-level root solution
-          - **SUSFS v1.5.12** - Advanced hiding and security features
+          - **SUSFS $SUSFS_BASE_VERSION** - Advanced hiding and security features
           - **Magic Mount Support** - Seamless file system modifications
           - **Manual Hooks** - scope_min_manual_hooks_v1.4 for better compatibility
           
