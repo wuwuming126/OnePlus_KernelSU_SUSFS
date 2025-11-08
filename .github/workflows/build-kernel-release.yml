@@ -213,6 +213,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.set-op-model.outputs.matrix) }}
+    outputs:
+      ksun_ver: ${{ steps.build.outputs.ksu_version }}
     steps:
       - name: 🧹 Emergency Disk Cleanup
         run: |
@@ -504,13 +506,12 @@ jobs:
           
           ## 📦 Built Devices (${#device_info[@]} total)
           
-          | Model | OS Version | Kernel Version | KSU Next | Features |
-          |-------|------------|----------------|----------|----------|
+          | Model | OS Version | Kernel Version | Features |
+          |-------|------------|----------------|----------|
           EOF
           
           for full_key in $(printf '%s\n' "${!device_info[@]}" | sort); do
             IFS='|' read -r model os_ver kernel_ver <<< "${device_info[$full_key]}"
-            ksu_ver="${ksu_versions[$full_key]:-N/A}"
             
             # Use jq to extract feature flags for this model from the JSON matrix
             feature_flags=$(jq -r --arg MODEL "$model" '
@@ -534,8 +535,8 @@ jobs:
               [[ "$ip_set" == "true" ]] && features+="🔧 IP_SET"
             fi
             
-            printf "| %-13s | %-10s | %-16s | v%-8s | %-30s |\n" \
-              "$model" "$os_ver" "$kernel_ver" "$ksu_ver" "$features" >> release_notes.md
+            printf "| %-13s | %-10s | %-16s | %-30s |\n" \
+              "$model" "$os_ver" "$kernel_ver" "$features" >> release_notes.md
           done
           
           cat << EOF >> release_notes.md
@@ -547,6 +548,7 @@ jobs:
           | Component | Version/Setting |
           |-----------|----------------|
           | **KernelSU Next Branch** | \`$KSUN_BRANCH\` |
+          | **KernelSU Next Version** | \`${{ needs.build.outputs.ksun_ver }}\` |
           | **SUSFS Version** | \`$SUSFS_BASE_VERSION\` |
           | **Optimization Level** | \`$OPTIMIZE_LEVEL\` |
           | **Clean Build** | $( [ "$CLEAN_BUILD" = "true" ] && echo "✅ Yes (no ccache)" || echo "❌ No (ccache enabled)" ) |
