@@ -460,9 +460,6 @@ jobs:
           
           # Collect build metadata
           declare -A device_info
-          declare -A ksu_versions
-          declare -A susfs_commits
-          declare -A clang_versions
           
           JSON_BUILD_DATA=$(jq -c '.' ./downloaded-artifacts/build-matrix/matrix.json)
           
@@ -473,9 +470,6 @@ jobs:
               os_version=$(sed -n '2p' "$file")
               kernel_version=$(sed -n '1p' "$file")
               device_info["$full_model"]="$model|$os_version|$kernel_version"
-              ksu_versions["$full_model"]="$ksu_ver"
-              susfs_commits["$full_model"]="$susfs_commit"
-              clang_versions["$full_model"]="$clang_ver"
             fi
           done
           
